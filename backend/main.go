@@ -17,7 +17,6 @@ var port = 9090
 func main() {
 
 	sm := mux.NewRouter()
-
 	server := http.Server{
 		Addr:         fmt.Sprintf(":%d", port), // configure the bind address
 		Handler:      sm,                       // set the default handler
