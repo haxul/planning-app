@@ -9,30 +9,28 @@ type State interface {
 	Move(c *Card) error
 }
 
-type BacklogState struct {
-	card *Card
-}
+var BacklogState = &Backlog{}
+var InProgressState = &InProgress{}
+var DoneState = &Done{}
 
-func (state *BacklogState) Move(card *Card) error {
+type Backlog struct{}
+
+func (state *Backlog) Move(card *Card) error {
 	card.UpdatedOn = time.Now()
-	card.CurState = &InProgressState{card: card}
+	card.CurState = &InProgress{}
 	return nil
 }
 
-type InProgressState struct {
-	card *Card
-}
+type InProgress struct{}
 
-func (state *InProgressState) Move(card *Card) error {
+func (state *InProgress) Move(card *Card) error {
 	card.UpdatedOn = time.Now()
-	card.CurState = &DoneState{card: card}
+	card.CurState = &Done{}
 	return nil
 }
 
-type DoneState struct {
-	card *Card
-}
+type Done struct{}
 
-func (state *DoneState) Move(_ *Card) error {
+func (state *Done) Move(_ *Card) error {
 	return errors.New("cannot move card from status done")
 }
