@@ -28,15 +28,15 @@ func NewCardResp(card *model.Card) (*CardResp, error) {
 
 	state := ""
 
-	if _, ok := card.CurState.(*model.Done); ok {
+	if _, ok := card.CurState.(*model.DoneState); ok {
 		state = "DONE"
 	}
 
-	if _, ok := card.CurState.(*model.Backlog); ok {
+	if _, ok := card.CurState.(*model.BacklogState); ok {
 		state = "BACKLOG"
 	}
 
-	if _, ok := card.CurState.(*model.InProgress); ok {
+	if _, ok := card.CurState.(*model.InProgressState); ok {
 		state = "IN_PROGRESS"
 	}
 

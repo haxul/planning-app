@@ -7,30 +7,55 @@ import (
 
 type State interface {
 	Move(c *Card) error
+	Reject(c *Card) error
 }
 
-var BacklogState = &Backlog{}
-var InProgressState = &InProgress{}
-var DoneState = &Done{}
+type BacklogState struct{}
 
-type Backlog struct{}
-
-func (state *Backlog) Move(card *Card) error {
+func (s *BacklogState) Move(card *Card) error {
 	card.UpdatedOn = time.Now()
-	card.CurState = &InProgress{}
+	card.CurState = &InProgressState{}
 	return nil
 }
 
-type InProgress struct{}
-
-func (state *InProgress) Move(card *Card) error {
-	card.UpdatedOn = time.Now()
-	card.CurState = &Done{}
+func (s *BacklogState) Reject(c *Card) error {
+	c.UpdatedOn = time.Now()
+	c.CurState = &RejectState{}
 	return nil
 }
 
-type Done struct{}
+type InProgressState struct{}
 
-func (state *Done) Move(_ *Card) error {
+func (s *InProgressState) Move(card *Card) error {
+	card.UpdatedOn = time.Now()
+	card.CurState = &DoneState{}
+	return nil
+}
+
+func (s *InProgressState) Reject(c *Card) error {
+	c.UpdatedOn = time.Now()
+	c.CurState = &RejectState{}
+	return nil
+}
+
+type DoneState struct{}
+
+func (s *DoneState) Move(_ *Card) error {
 	return errors.New("cannot move card from status done")
+}
+
+func (s *DoneState) Reject(_ *Card) error {
+	return errors.New("cannot move card from status done")
+}
+
+type RejectState struct{}
+
+func (s *RejectState) Move(c *Card) error {
+	c.UpdatedOn = time.Now()
+	c.CurState = &BacklogState{}
+	return nil
+}
+
+func (s *RejectState) Reject(_ *Card) error {
+	return nil
 }

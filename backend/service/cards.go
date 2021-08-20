@@ -38,8 +38,8 @@ func (cs *Cards) NewCard(title string, description string, tag string) *model.Ca
 		Tag:         tag,
 		UpdatedOn:   time.Now(),
 	}
-	state := model.BacklogState
-	card.CurState = state
+	s := &model.BacklogState{}
+	card.CurState = s
 	msg := fmt.Sprintf("new card with id %s is created", card.Id)
 	cs.logger.Println(msg)
 	return card
