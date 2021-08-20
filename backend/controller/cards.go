@@ -7,16 +7,25 @@ import (
 	"github.com/haxul/planning-app/backend/service"
 	"log"
 	"net/http"
+	"sync"
 )
+
+var once sync.Once
+var instance *Cards
 
 type Cards struct {
 	logger       *log.Logger
 	cardsService *service.Cards
 }
 
-var CardsController = &Cards{
-	cardsService: service.CardsService,
-	logger:       common.Logger}
+func GetCardsCntlInstance() *Cards {
+	once.Do(func() {
+		instance = &Cards{
+			cardsService: service.GetCardsSvInstance(),
+			logger:       common.Logger}
+	})
+	return instance
+}
 
 func (c *Cards) CreateCard(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")

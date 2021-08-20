@@ -1,10 +1,23 @@
 package ram
 
-import "github.com/haxul/planning-app/backend/model"
+import (
+	"github.com/haxul/planning-app/backend/model"
+	"sync"
+)
+
+var once sync.Once
 
 type Cards struct{}
 
-var CardsPersist = &Cards{}
+var instance *Cards
+
+func GetCardsPrsInstance() *Cards {
+	once.Do(func() {
+		instance = &Cards{}
+	})
+
+	return instance
+}
 
 var storage = make([]*model.Card, 0)
 

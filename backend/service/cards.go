@@ -7,17 +7,26 @@ import (
 	"github.com/haxul/planning-app/backend/model"
 	"github.com/haxul/planning-app/backend/persistance/ram"
 	"log"
+	"sync"
 	"time"
 )
+
+var once sync.Once
+var instance *Cards
 
 type Cards struct {
 	logger           *log.Logger
 	cardsPersistence *ram.Cards
 }
 
-var CardsService = &Cards{
-	logger:           common.Logger,
-	cardsPersistence: ram.CardsPersist,
+func GetCardsSvInstance() *Cards {
+	once.Do(func() {
+		instance = &Cards{
+			logger:           common.Logger,
+			cardsPersistence: ram.GetCardsPrsInstance(),
+		}
+	})
+	return instance
 }
 
 func (cs *Cards) NewCard(title string, description string, tag string) *model.Card {
