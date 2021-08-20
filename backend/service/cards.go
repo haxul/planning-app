@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/haxul/planning-app/backend/common"
 	"github.com/haxul/planning-app/backend/model"
+	"github.com/haxul/planning-app/backend/persistance"
 	"github.com/haxul/planning-app/backend/persistance/ram"
 	"log"
 	"sync"
@@ -16,7 +17,7 @@ var instance *Cards
 
 type Cards struct {
 	logger           *log.Logger
-	cardsPersistence *ram.Cards
+	cardsPersistence persistance.CardPersistence
 }
 
 func GetCardsSvInstance() *Cards {
