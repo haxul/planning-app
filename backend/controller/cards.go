@@ -2,6 +2,7 @@ package controller
 
 import (
 	json "encoding/json"
+	"github.com/gorilla/mux"
 	"github.com/haxul/planning-app/backend/common"
 	"github.com/haxul/planning-app/backend/controller/dto"
 	"github.com/haxul/planning-app/backend/service"
@@ -11,29 +12,29 @@ import (
 )
 
 var once sync.Once
-var instance *Cards
+var instance *CardsCtrl
 
-type Cards struct {
+type CardsCtrl struct {
 	logger       *log.Logger
-	cardsService *service.Cards
+	cardsService *service.CardsSv
 }
 
-func GetCardsCntlInstance() *Cards {
+func GetCardsCtrlInstance() *CardsCtrl {
 	once.Do(func() {
-		instance = &Cards{
+		instance = &CardsCtrl{
 			cardsService: service.GetCardsSvInstance(),
 			logger:       common.Logger}
 	})
 	return instance
 }
 
-func (c *Cards) CreateCard(w http.ResponseWriter, r *http.Request) {
+func (ctrl *CardsCtrl) CreateCard(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	cardReq := &dto.CardReq{}
 
 	err := json.NewDecoder(r.Body).Decode(cardReq)
 	if err != nil {
-		c.logger.Println(err.Error())
+		ctrl.logger.Println(err.Error())
 		http.Error(w, "cannot decode json cardReq....", http.StatusInternalServerError)
 		return
 	}
@@ -45,12 +46,12 @@ func (c *Cards) CreateCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newCard := c.cardsService.NewCard(cardReq.Title, cardReq.Description, cardReq.Tag)
-	c.cardsService.SaveCard(newCard)
+	newCard := ctrl.cardsService.NewCard(cardReq.Title, cardReq.Description, cardReq.Tag)
+	ctrl.cardsService.SaveCard(newCard)
 	cardResp, cardErr := dto.NewCardResp(newCard)
 
 	if cardErr != nil {
-		c.logger.Println(cardErr.Error())
+		ctrl.logger.Println(cardErr.Error())
 		http.Error(w, cardErr.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -58,23 +59,23 @@ func (c *Cards) CreateCard(w http.ResponseWriter, r *http.Request) {
 	encErr := json.NewEncoder(w).Encode(cardResp)
 
 	if encErr != nil {
-		c.logger.Println(encErr.Error())
+		ctrl.logger.Println(encErr.Error())
 		http.Error(w, "cannot decode json card", http.StatusInternalServerError)
 		return
 	}
 }
 
-func (c *Cards) GetAllCards(w http.ResponseWriter, _ *http.Request) {
+func (ctrl *CardsCtrl) GetAllCards(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	cards := c.cardsService.GetAllCards()
+	cards := ctrl.cardsService.GetAllCards()
 
 	list := make([]*dto.CardResp, len(cards))
 
 	for i, card := range cards {
 		r, err := dto.NewCardResp(card)
 		if err != nil {
-			c.logger.Println(err.Error())
-			http.Error(w, "cannot encode cards as json", http.StatusInternalServerError)
+			ctrl.logger.Println(err.Error())
+			http.Error(w, "cannot create card response", http.StatusInternalServerError)
 			return
 		}
 		list[i] = r
@@ -82,8 +83,28 @@ func (c *Cards) GetAllCards(w http.ResponseWriter, _ *http.Request) {
 
 	err := json.NewEncoder(w).Encode(list)
 	if err != nil {
-		c.logger.Println(err.Error())
+		ctrl.logger.Println(err.Error())
 		http.Error(w, "cannot encode cards as json", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (ctrl *CardsCtrl) MoveCard(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	cardId := vars["id"]
+	err := ctrl.cardsService.MoveForwardCard(&cardId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusConflict)
+		return
+	}
+}
+
+func (ctrl *CardsCtrl) RejectCard(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	cardId := vars["id"]
+	err := ctrl.cardsService.RejectCard(&cardId)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusConflict)
 		return
 	}
 }

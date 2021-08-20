@@ -18,11 +18,13 @@ func main() {
 
 	// GET
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/cards", controller.GetCardsCntlInstance().GetAllCards)
+	getRouter.HandleFunc("/card", controller.GetCardsCtrlInstance().GetAllCards)
 
 	// POST
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
-	postRouter.HandleFunc("/cards", controller.GetCardsCntlInstance().CreateCard)
+	postRouter.HandleFunc("/card", controller.GetCardsCtrlInstance().CreateCard)
+	postRouter.HandleFunc("/card/{id}/move", controller.GetCardsCtrlInstance().MoveCard)
+	postRouter.HandleFunc("/card/{id}/reject", controller.GetCardsCtrlInstance().RejectCard)
 
 	server := http.Server{
 		Addr:         fmt.Sprintf(":%d", common.Port), // configure the bind address

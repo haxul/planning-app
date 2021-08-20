@@ -44,8 +44,10 @@ func (s *DoneState) Move(_ *Card) error {
 	return errors.New("cannot move card from status done")
 }
 
-func (s *DoneState) Reject(_ *Card) error {
-	return errors.New("cannot move card from status done")
+func (s *DoneState) Reject(c *Card) error {
+	c.UpdatedOn = time.Now()
+	c.CurState = &RejectState{}
+	return nil
 }
 
 type RejectState struct{}

@@ -40,6 +40,10 @@ func NewCardResp(card *model.Card) (*CardResp, error) {
 		state = "IN_PROGRESS"
 	}
 
+	if _, ok := card.CurState.(*model.RejectState); ok {
+		state = "REJECTED"
+	}
+
 	if state == "" {
 		return nil, errors.New("state is not defined in card")
 	}

@@ -1,29 +1,51 @@
 package ram
 
 import (
+	"errors"
+	"fmt"
 	"github.com/haxul/planning-app/backend/model"
 	"sync"
+	"time"
 )
 
 var once sync.Once
 
-type Cards struct{}
+type CardsPst struct{}
 
-var instance *Cards
-var storage = make([]*model.Card, 0)
+var instance *CardsPst
 
-func GetCardsPrsInstance() *Cards {
+var storage = []*model.Card{
+	{
+		Id:          "test",
+		Tag:         "Book",
+		Description: "some description",
+		CurState:    &model.BacklogState{},
+		Title:       "title",
+		UpdatedOn:   time.Now(),
+	},
+}
+
+func GetCardsPrsInstance() *CardsPst {
 	once.Do(func() {
-		instance = &Cards{}
+		instance = &CardsPst{}
 	})
 
 	return instance
 }
 
-func (cp *Cards) AddCard(c *model.Card) {
+func (cp *CardsPst) AddCard(c *model.Card) {
 	storage = append(storage, c)
 }
 
-func (cp *Cards) GetAllCards() []*model.Card {
+func (cp *CardsPst) GetAllCards() []*model.Card {
 	return storage
+}
+
+func (cp *CardsPst) FindById(cardId *string) (*model.Card, error) {
+	for _, card := range storage {
+		if card.Id == *cardId {
+			return card, nil
+		}
+	}
+	return nil, errors.New(fmt.Sprintf("card %s is not found", *cardId))
 }

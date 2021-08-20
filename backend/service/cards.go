@@ -13,16 +13,16 @@ import (
 )
 
 var once sync.Once
-var instance *Cards
+var instance *CardsSv
 
-type Cards struct {
+type CardsSv struct {
 	logger           *log.Logger
 	cardsPersistence persistance.CardPersistence
 }
 
-func GetCardsSvInstance() *Cards {
+func GetCardsSvInstance() *CardsSv {
 	once.Do(func() {
-		instance = &Cards{
+		instance = &CardsSv{
 			logger:           common.Logger,
 			cardsPersistence: ram.GetCardsPrsInstance(),
 		}
@@ -30,25 +30,44 @@ func GetCardsSvInstance() *Cards {
 	return instance
 }
 
-func (cs *Cards) NewCard(title string, description string, tag string) *model.Card {
+func (cs *CardsSv) NewCard(title string, description string, tag string) *model.Card {
 	card := &model.Card{
 		Id:          uuid.NewString(),
 		Title:       title,
 		Description: description,
 		Tag:         tag,
 		UpdatedOn:   time.Now(),
+		CurState:    &model.BacklogState{},
 	}
-	s := &model.BacklogState{}
-	card.CurState = s
 	msg := fmt.Sprintf("new card with id %s is created", card.Id)
 	cs.logger.Println(msg)
 	return card
 }
 
-func (cs *Cards) SaveCard(card *model.Card) {
+func (cs *CardsSv) SaveCard(card *model.Card) {
 	cs.cardsPersistence.AddCard(card)
 }
 
-func (cs *Cards) GetAllCards() []*model.Card {
+func (cs *CardsSv) GetAllCards() []*model.Card {
 	return cs.cardsPersistence.GetAllCards()
+}
+
+func (cs *CardsSv) MoveForwardCard(cardId *string) error {
+	card, err := cs.FindCardById(cardId)
+	if err != nil {
+		return err
+	}
+	return card.CurState.Move(card)
+}
+
+func (cs *CardsSv) RejectCard(cardId *string) error {
+	card, err := cs.FindCardById(cardId)
+	if err != nil {
+		return err
+	}
+	return card.CurState.Reject(card)
+}
+
+func (cs *CardsSv) FindCardById(id *string) (*model.Card, error) {
+	return cs.cardsPersistence.FindById(id)
 }
