@@ -24,28 +24,29 @@
 </template>
 
 <script>
+import Constants from "@/commom/constants"
+import router from "@/router";
 
 export default {
   name: 'App',
   components: {},
   data() {
     return {
-      curPage: "Board",
+      curPage: Constants.PAGES.BOARD,
       pages: [
-        {name: "Board", link: "/"},
-        {name: "Create Card", link: "/create-card"}
+        {name: Constants.PAGES.BOARD, link: "/"},
+        {name: Constants.PAGES.CREATE_CARD, link: "/create-card"}
       ]
-    }
-  },
-  computed: {
-    isCurPage(page) {
-      return this.curPage === page
     }
   },
   methods: {
     handleLi(page) {
       this.curPage = page
     }
+  }
+  ,
+  mounted() {
+    if (router.currentRoute.fullPath !== "/") router.push("/")
   }
 }
 </script>

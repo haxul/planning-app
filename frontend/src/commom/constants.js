@@ -5,5 +5,9 @@ export default {
         IN_PROGRESS: "IN_PROGRESS",
         REJECTED: "REJECTED",
         DONE: "DONE"
+    },
+    PAGES: {
+        BOARD: "Board",
+        CREATE_CARD: "Create Card"
     }
 }
