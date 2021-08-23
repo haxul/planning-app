@@ -90,21 +90,38 @@ func (ctrl *CardsCtrl) GetAllCards(w http.ResponseWriter, _ *http.Request) {
 }
 
 func (ctrl *CardsCtrl) MoveCard(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
 	cardId := vars["id"]
-	err := ctrl.cardsService.MoveForwardCard(&cardId)
+	newState, err := ctrl.cardsService.MoveForwardCard(&cardId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusConflict)
 		return
 	}
+	resp := &dto.ChangeStateCardResp{NewState: newState}
+	errJson := json.NewEncoder(w).Encode(resp)
+	if errJson != nil {
+		ctrl.logger.Println(err.Error())
+		http.Error(w, "changeCardResp encoding error", http.StatusInternalServerError)
+		return
+	}
+
 }
 
 func (ctrl *CardsCtrl) RejectCard(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
 	cardId := vars["id"]
-	err := ctrl.cardsService.RejectCard(&cardId)
+	newState, err := ctrl.cardsService.RejectCard(&cardId)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusConflict)
+		return
+	}
+	resp := &dto.ChangeStateCardResp{NewState: newState}
+	errJson := json.NewEncoder(w).Encode(resp)
+	if errJson != nil {
+		ctrl.logger.Println(err.Error())
+		http.Error(w, "changeCardResp encoding error", http.StatusInternalServerError)
 		return
 	}
 }

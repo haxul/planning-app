@@ -21,6 +21,10 @@ type CardResp struct {
 	UpdatedOn   time.Time `json:"updated_on"`
 }
 
+type ChangeStateCardResp struct {
+	NewState string `json:"new_state"`
+}
+
 func NewCardResp(card *model.Card) (*CardResp, error) {
 	if card == nil {
 		return nil, errors.New("card is nil")

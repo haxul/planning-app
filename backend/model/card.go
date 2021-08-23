@@ -13,6 +13,6 @@ type Card struct {
 	UpdatedOn   time.Time
 }
 
-func (c *Card) Push() error {
+func (c *Card) Push() (string, error) {
 	return c.CurState.Move(c)
 }

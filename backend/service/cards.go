@@ -52,18 +52,18 @@ func (cs *CardsSv) GetAllCards() []*model.Card {
 	return cs.cardsPersistence.GetAllCards()
 }
 
-func (cs *CardsSv) MoveForwardCard(cardId *string) error {
+func (cs *CardsSv) MoveForwardCard(cardId *string) (string, error) {
 	card, err := cs.FindCardById(cardId)
 	if err != nil {
-		return err
+		return "", err
 	}
 	return card.CurState.Move(card)
 }
 
-func (cs *CardsSv) RejectCard(cardId *string) error {
+func (cs *CardsSv) RejectCard(cardId *string) (string, error) {
 	card, err := cs.FindCardById(cardId)
 	if err != nil {
-		return err
+		return "", err
 	}
 	return card.CurState.Reject(card)
 }
