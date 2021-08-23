@@ -17,20 +17,17 @@ export default {
         cards: []
     },
     getters: {
-        getCards(state) {
-            return state.cards
-        },
         getBacklogList(state) {
-            return state.cards.filter(e => e.cur_state === "BACKLOG")
+            return state.cards.filter(e => e.cur_state === Constants.CARD_STATE.BACKLOG)
         },
         getInProgressList(state) {
-            return state.cards.filter(e => e.cur_state === "IN_PROGRESS")
+            return state.cards.filter(e => e.cur_state === Constants.CARD_STATE.IN_PROGRESS)
         },
         getDoneList(state) {
-            return state.cards.filter(e => e.cur_state === "DONE")
+            return state.cards.filter(e => e.cur_state === Constants.CARD_STATE.DONE)
         },
         getRejectedList(state) {
-            return state.cards.filter(e => e.cur_state === "REJECTED")
+            return state.cards.filter(e => e.cur_state === Constants.CARD_STATE.REJECTED)
         }
     },
 }
