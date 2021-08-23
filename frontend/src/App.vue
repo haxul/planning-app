@@ -9,13 +9,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <router-link class="nav-link active" aria-current="page" to="/">Board</router-link>
+            <li class="nav-item" v-for="page in pages" :key=page.name
+                @click="handleLi(page.name)">
+              <router-link class="nav-link" :class="{active: page.name === curPage}" aria-current="page" :to=page.link>
+                {{ page.name }}
+              </router-link>
             </li>
-            <!--            Feature is not ready-->
-            <!--            <li class="nav-item">-->
-            <!--              <router-link class="nav-link " to="/account">Accounting</router-link>-->
-            <!--            </li>-->
           </ul>
         </div>
       </div>
@@ -28,7 +27,26 @@
 
 export default {
   name: 'App',
-  components: {}
+  components: {},
+  data() {
+    return {
+      curPage: "Board",
+      pages: [
+        {name: "Board", link: "/"},
+        {name: "Create Card", link: "/create-card"}
+      ]
+    }
+  },
+  computed: {
+    isCurPage(page) {
+      return this.curPage === page
+    }
+  },
+  methods: {
+    handleLi(page) {
+      this.curPage = page
+    }
+  }
 }
 </script>
 
