@@ -5,7 +5,7 @@
       <h5 class="card-title">{{ card.title }}</h5>
       <p class="card-text">{{ card.description }}</p>
       <div class="move" @click="handleMove()"></div>
-      <div class="reject"></div>
+      <div class="reject" @click="handleReject()"></div>
     </div>
   </div>
 </template>
@@ -23,8 +23,13 @@ export default {
     },
   },
   methods: {
+
     handleMove() {
-      this.$store.commit("updateCardById", {id: this.card.id, newState: "IN_PROGRESS"})
+      this.$store.dispatch("moveCard", {id: this.card.id})
+    },
+
+    handleReject() {
+      this.$store.dispatch("rejectCard", {id: this.card.id})
     }
   }
 }

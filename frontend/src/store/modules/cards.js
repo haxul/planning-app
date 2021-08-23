@@ -6,6 +6,43 @@ export default {
             const resp = await fetch(`${Constants.BASE_URL}/card`)
             const cards = await resp.json()
             ctx.commit("updateCards", cards)
+        },
+
+        async moveCard(ctx, payload) {
+            const {id} = payload
+            const resp = await fetch(`${Constants.BASE_URL}/card/${id}/move`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "origin": "localhost:8080",
+                },
+            })
+            if (resp.status === 200) {
+                const body = await resp.json()
+                const newState = body.new_state
+                ctx.commit("updateCardById", {id, newState})
+                return
+            }
+            if (resp.status === 409) {
+                const text = await resp.text()
+                alert(text)
+            }
+        },
+
+        async rejectCard(ctx, payload) {
+            const {id} = payload
+            const resp = await fetch(`${Constants.BASE_URL}/card/${id}/reject`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "origin": "localhost:8080",
+                },
+            })
+            if (resp.status === 200) {
+                const body = await resp.json()
+                const newState = body.new_state
+                ctx.commit("updateCardById", {id, newState})
+            }
         }
     },
     mutations: {
@@ -15,9 +52,10 @@ export default {
 
         updateCardById(state, payload) {
             const {id, newState} = payload
-            console.log(state.cards)
             const card = state.cards.find(el => el.id === id)
-            if (card) card.cur_state = newState
+            if (card) {
+                card.cur_state = newState
+            }
         }
     },
     state: {
