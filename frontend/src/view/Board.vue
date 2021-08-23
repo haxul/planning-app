@@ -46,45 +46,32 @@
 <script>
 
 import Card from "@/components/Card";
+import {mapGetters} from "vuex"
 
 export default {
   name: "Board",
   components: {Card},
-  data() {
-    return {
-      cards: [{
-        id: "strang",
-        description: "some text",
-        title: "bigggg",
-        tag: "Course",
-        curState: "Backlog"
-      },
-        {
-          id: "strang",
-          description: "some text",
-          title: "bigggg",
-          tag: "Book",
-          curState: "Done"
-        }],
 
+
+  computed: {
+    ...mapGetters(["getCards"]),
+    backlogList() {
+      return this.getCards.filter(e => e.cur_state === "BACKLOG")
+    },
+    inProgressList() {
+      return this.getCards.filter(e => e.cur_state === "IN_PROGRESS")
+    },
+    doneList() {
+      return this.getCards.filter(e => e.cur_state === "DONE")
+    },
+    rejectedList() {
+      return this.getCards.filter(e => e.cur_state === "REJECTED")
     }
   },
 
-  computed: {
-    backlogList() {
-      return this.cards.filter(e => e.curState === "Backlog")
-    },
-    inProgressList() {
-      return this.cards.filter(e => e.curState === "InProgress")
-    },
-    doneList() {
-      return this.cards.filter(e => e.curState === "Done")
-    },
-    rejectedList() {
-      return this.cards.filter(e => e.curState === "Rejected")
-    }
+  mounted() {
+    this.$store.dispatch("fetchCards")
   }
-
 }
 </script>
 

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/haxul/planning-app/backend/common"
 	"github.com/haxul/planning-app/backend/controller"
@@ -26,9 +27,12 @@ func main() {
 	postRouter.HandleFunc("/card/{id}/move", controller.GetCardsCtrlInstance().MoveCard)
 	postRouter.HandleFunc("/card/{id}/reject", controller.GetCardsCtrlInstance().RejectCard)
 
+	// CORS
+	cors := handlers.CORS(handlers.AllowedOrigins([]string{"*"}))
+	// create server
 	server := http.Server{
 		Addr:         fmt.Sprintf(":%d", common.Port), // configure the bind address
-		Handler:      sm,                              // set the default handler
+		Handler:      cors(sm),                        // set the default handler
 		ErrorLog:     common.Logger,                   // set the logger for the server
 		ReadTimeout:  5 * time.Second,                 // max time to read request from the client
 		WriteTimeout: 10 * time.Second,                // max time to write response to the client
