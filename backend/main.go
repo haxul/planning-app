@@ -28,7 +28,11 @@ func main() {
 	postRouter.HandleFunc("/card/{id}/reject", controller.GetCardsCtrlInstance().RejectCard)
 
 	// CORS
-	cors := handlers.CORS(handlers.AllowedOrigins([]string{"*"}))
+	cors := handlers.CORS(
+		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "DELETE"}),
+		handlers.AllowedOrigins([]string{"*"}))
+
 	// create server
 	server := http.Server{
 		Addr:         fmt.Sprintf(":%d", common.Port), // configure the bind address

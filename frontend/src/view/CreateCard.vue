@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import Constants from "@/commom/constants"
+// import Constants from "@/commom/constants"
 
 export default {
   name: "CreateCard",
@@ -58,12 +58,15 @@ export default {
         title: this.title,
         description: this.description
       }
-      const resp = await fetch(`${Constants.BASE_URL}/card`, {
+      const resp = await fetch(`http://localhost:9090/card`, {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          "origin": "localhost:8080",
+        },
         body: JSON.stringify(body)
       })
-      console.log(resp.status)
+      console.log(resp)
       this.errors = []
     }
   }
