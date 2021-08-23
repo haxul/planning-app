@@ -25,11 +25,15 @@
     <ul class="err">
       <li v-for="(e, idx) in errors" :key="idx">{{ e }}</li>
     </ul>
+
+    <div v-if="success" class="success">
+      {{ success }}
+    </div>
   </div>
 </template>
 
 <script>
-// import Constants from "@/commom/constants"
+import Constants from "@/commom/constants"
 
 export default {
   name: "CreateCard",
@@ -39,7 +43,8 @@ export default {
       tag: "",
       title: "",
       description: "",
-      errors: []
+      errors: [],
+      success: ""
     }
   },
 
@@ -58,7 +63,8 @@ export default {
         title: this.title,
         description: this.description
       }
-      const resp = await fetch(`http://localhost:9090/card`, {
+
+      const resp = await fetch(`${Constants.BASE_URL}/card`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,8 +72,16 @@ export default {
         },
         body: JSON.stringify(body)
       })
-      console.log(resp)
       this.errors = []
+      if (resp.status === 200) {
+        this.tag = ""
+        this.title = ""
+        this.description = ""
+        this.success = "the card was successfully created"
+        setTimeout(() => this.success = "", 2000)
+        return
+      }
+      this.errors.push("server responded by error")
     }
   }
 
@@ -81,5 +95,9 @@ export default {
 
 .err {
   color: darkred;
+}
+
+.success {
+  color: green;
 }
 </style>
