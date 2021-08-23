@@ -64,14 +64,16 @@ export default {
         description: this.description
       }
 
-      const resp = await fetch(`${Constants.BASE_URL}/card`, {
+      const params = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "origin": "localhost:8080",
         },
         body: JSON.stringify(body)
-      })
+      }
+      const resp = await fetch(`${Constants.BASE_URL}/card`, params)
+
       this.errors = []
       if (resp.status === 200) {
         this.tag = ""
