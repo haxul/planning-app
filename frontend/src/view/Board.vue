@@ -16,25 +16,25 @@
     </div>
     <div class="row align-items-start">
       <div class="col">
-        <Card v-for="(elem, idx) in backlogList" :key="elem.id + idx" :title="elem.title"
+        <Card v-for="(elem, idx) in getBacklogList" :key="elem.id + idx" :title="elem.title"
               :description="elem.description"
               :tag="elem.tag"
         />
       </div>
       <div class="col">
-        <Card v-for="(elem, idx) in inProgressList" :key="elem.id + idx" :title="elem.title"
+        <Card v-for="(elem, idx) in getInProgressList" :key="elem.id + idx" :title="elem.title"
               :description="elem.description"
               :tag="elem.tag"
         />
       </div>
       <div class="col">
-        <Card v-for="(elem, idx) in doneList" :key="elem.id + idx" :title="elem.title"
+        <Card v-for="(elem, idx) in getDoneList" :key="elem.id + idx" :title="elem.title"
               :description="elem.description"
               :tag="elem.tag"
         />
       </div>
       <div class="col">
-        <Card v-for="(elem, idx) in rejectedList" :key="elem.id + idx" :title="elem.title"
+        <Card v-for="(elem, idx) in getRejectedList" :key="elem.id + idx" :title="elem.title"
               :description="elem.description"
               :tag="elem.tag"
         />
@@ -51,24 +51,10 @@ import {mapGetters} from "vuex"
 export default {
   name: "Board",
   components: {Card},
-
-
   computed: {
-    ...mapGetters(["getCards"]),
-    backlogList() {
-      return this.getCards.filter(e => e.cur_state === "BACKLOG")
-    },
-    inProgressList() {
-      return this.getCards.filter(e => e.cur_state === "IN_PROGRESS")
-    },
-    doneList() {
-      return this.getCards.filter(e => e.cur_state === "DONE")
-    },
-    rejectedList() {
-      return this.getCards.filter(e => e.cur_state === "REJECTED")
-    }
-  },
-
+    ...mapGetters(["getDoneList", "getInProgressList", "getBacklogList", "getRejectedList"])
+  }
+  ,
   mounted() {
     this.$store.dispatch("fetchCards")
   }

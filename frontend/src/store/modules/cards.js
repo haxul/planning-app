@@ -19,6 +19,18 @@ export default {
     getters: {
         getCards(state) {
             return state.cards
+        },
+        getBacklogList(state) {
+            return state.cards.filter(e => e.cur_state === "BACKLOG")
+        },
+        getInProgressList(state) {
+            return state.cards.filter(e => e.cur_state === "IN_PROGRESS")
+        },
+        getDoneList(state) {
+            return state.cards.filter(e => e.cur_state === "DONE")
+        },
+        getRejectedList(state) {
+            return state.cards.filter(e => e.cur_state === "REJECTED")
         }
     },
 }
