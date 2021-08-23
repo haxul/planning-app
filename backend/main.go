@@ -7,6 +7,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/haxul/planning-app/backend/common"
 	"github.com/haxul/planning-app/backend/controller"
+	"github.com/haxul/planning-app/backend/persistance/postgres"
+	"github.com/jackc/pgx/v4"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,7 +16,6 @@ import (
 )
 
 func main() {
-
 	sm := mux.NewRouter()
 
 	// GET
@@ -42,6 +43,15 @@ func main() {
 		WriteTimeout: 10 * time.Second,                // max time to write response to the client
 		IdleTimeout:  120 * time.Second,               // max time for connections using TCP Keep-Alive
 	}
+
+	//postgres
+	connection, errPs := pgx.Connect(context.Background(), "user=haxul password=test host=localhost port=5432 dbname=planning_db")
+	if errPs != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "%s", errPs)
+		os.Exit(1)
+	}
+	postgres.PostgreConn = connection
+	defer postgres.PostgreConn.Close(context.Background())
 
 	go func() {
 		common.Logger.Println(fmt.Sprintf("Starting server on port %d", common.Port))

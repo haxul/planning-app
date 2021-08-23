@@ -24,7 +24,7 @@ func GetCardsSvInstance() *CardsSv {
 	once.Do(func() {
 		instance = &CardsSv{
 			logger:           common.Logger,
-			cardsPersistence: ram.GetCardsPrsInstance(),
+			cardsPersistence: ram.GetCardsRamPrsInstance(),
 		}
 	})
 	return instance

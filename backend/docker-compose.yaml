@@ -1,0 +1,14 @@
+version: "3"
+services:
+  postgresdb:
+    image: postgres
+    container_name: postgres_english_train_db
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data/pgdata
+    environment:
+      POSTGRES_USER: haxul
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: planning_db
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"

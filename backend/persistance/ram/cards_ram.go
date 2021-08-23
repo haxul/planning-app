@@ -25,7 +25,7 @@ var storage = []*model.Card{
 	},
 }
 
-func GetCardsPrsInstance() *CardsPst {
+func GetCardsRamPrsInstance() *CardsPst {
 	once.Do(func() {
 		instance = &CardsPst{}
 	})
