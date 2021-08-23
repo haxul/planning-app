@@ -16,28 +16,17 @@
     </div>
     <div class="row align-items-start">
       <div class="col">
-        <Card v-for="(elem, idx) in getBacklogList" :key="elem.id + idx" :title="elem.title"
-              :description="elem.description"
-              :tag="elem.tag"
-        />
+        <Card v-for="(elem, idx) in getBacklogList" :key="elem.id + idx" :card="elem"/>
+
       </div>
       <div class="col">
-        <Card v-for="(elem, idx) in getInProgressList" :key="elem.id + idx" :title="elem.title"
-              :description="elem.description"
-              :tag="elem.tag"
-        />
+        <Card v-for="(elem, idx) in getInProgressList" :key="elem.id + idx" :card="elem"/>
       </div>
       <div class="col">
-        <Card v-for="(elem, idx) in getDoneList" :key="elem.id + idx" :title="elem.title"
-              :description="elem.description"
-              :tag="elem.tag"
-        />
+        <Card v-for="(elem, idx) in getDoneList" :key="elem.id + idx" :card="elem"/>
       </div>
       <div class="col">
-        <Card v-for="(elem, idx) in getRejectedList" :key="elem.id + idx" :title="elem.title"
-              :description="elem.description"
-              :tag="elem.tag"
-        />
+        <Card v-for="(elem, idx) in getRejectedList" :key="elem.id + idx" :card="elem"/>
       </div>
     </div>
   </div>

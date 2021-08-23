@@ -11,12 +11,22 @@ export default {
     mutations: {
         updateCards(state, cards) {
             state.cards = cards
+        },
+
+        updateCardById(state, payload) {
+            const {id, newState} = payload
+            console.log(state.cards)
+            const card = state.cards.find(el => el.id === id)
+            if (card) card.cur_state = newState
         }
     },
     state: {
         cards: []
     },
     getters: {
+        getCards(state) {
+            return state.cards
+        },
         getBacklogList(state) {
             return state.cards.filter(e => e.cur_state === Constants.CARD_STATE.BACKLOG)
         },
