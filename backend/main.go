@@ -58,7 +58,7 @@ func main() {
 		}
 	}(postgres.PostgreConn, context.Background())
 
-	// gracefully server shouting
+	// graceful server shouting
 	go func() {
 		common.Logger.Println(fmt.Sprintf("Starting server on port %d", common.Port))
 

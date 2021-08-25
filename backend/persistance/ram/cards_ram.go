@@ -10,9 +10,9 @@ import (
 
 var once sync.Once
 
-type CardsPst struct{}
+type CardsRamPst struct{}
 
-var instance *CardsPst
+var instance *CardsRamPst
 
 var storage = []*model.Card{
 	{
@@ -25,23 +25,23 @@ var storage = []*model.Card{
 	},
 }
 
-func GetCardsRamPrsInstance() *CardsPst {
+func GetCardsRamPrsInstance() *CardsRamPst {
 	once.Do(func() {
-		instance = &CardsPst{}
+		instance = &CardsRamPst{}
 	})
 
 	return instance
 }
 
-func (cp *CardsPst) AddCard(c *model.Card) {
+func (cp *CardsRamPst) AddCard(c *model.Card) {
 	storage = append(storage, c)
 }
 
-func (cp *CardsPst) GetAllCards() []*model.Card {
+func (cp *CardsRamPst) GetAllCards() []*model.Card {
 	return storage
 }
 
-func (cp *CardsPst) FindById(cardId *string) (*model.Card, error) {
+func (cp *CardsRamPst) FindById(cardId *string) (*model.Card, error) {
 	for _, card := range storage {
 		if card.Id == *cardId {
 			return card, nil

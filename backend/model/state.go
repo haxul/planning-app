@@ -9,9 +9,14 @@ import (
 type State interface {
 	Move(c *Card) (string, error)
 	Reject(c *Card) (string, error)
+	String() string
 }
 
 type BacklogState struct{}
+
+func (s *BacklogState) String() string {
+	return common.BACKLOG_STATE
+}
 
 func (s *BacklogState) Move(card *Card) (string, error) {
 	card.UpdatedOn = time.Now()
@@ -27,6 +32,10 @@ func (s *BacklogState) Reject(c *Card) (string, error) {
 
 type InProgressState struct{}
 
+func (s *InProgressState) String() string {
+	return common.IN_PROGRESS_STATE
+}
+
 func (s *InProgressState) Move(card *Card) (string, error) {
 	card.UpdatedOn = time.Now()
 	card.CurState = &DoneState{}
@@ -41,6 +50,10 @@ func (s *InProgressState) Reject(c *Card) (string, error) {
 
 type DoneState struct{}
 
+func (s *DoneState) String() string {
+	return common.DONE_STATE
+}
+
 func (s *DoneState) Move(_ *Card) (string, error) {
 	return "", errors.New("cannot move card from status done")
 }
@@ -52,6 +65,10 @@ func (s *DoneState) Reject(c *Card) (string, error) {
 }
 
 type RejectState struct{}
+
+func (s *RejectState) String() string {
+	return common.REJECTED_STATE
+}
 
 func (s *RejectState) Move(c *Card) (string, error) {
 	c.UpdatedOn = time.Now()

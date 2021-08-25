@@ -6,7 +6,7 @@ import (
 	"github.com/haxul/planning-app/backend/common"
 	"github.com/haxul/planning-app/backend/model"
 	"github.com/haxul/planning-app/backend/persistance"
-	"github.com/haxul/planning-app/backend/persistance/ram"
+	"github.com/haxul/planning-app/backend/persistance/postgres"
 	"log"
 	"sync"
 	"time"
@@ -24,7 +24,7 @@ func GetCardsSvInstance() *CardsSv {
 	once.Do(func() {
 		instance = &CardsSv{
 			logger:           common.Logger,
-			cardsPersistence: ram.GetCardsRamPrsInstance(),
+			cardsPersistence: postgres.GetCardsPostgresPrs(),
 		}
 	})
 	return instance
