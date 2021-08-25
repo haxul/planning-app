@@ -45,14 +45,20 @@ func main() {
 	}
 
 	//postgres
-	connection, errPs := pgx.Connect(context.Background(), "user=haxul password=test host=localhost port=5432 dbname=planning_db")
+	connection, errPs := pgx.Connect(context.Background(),
+		"user=haxul password=test host=localhost port=5432 dbname=planning_db")
 	if errPs != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "%s", errPs)
-		os.Exit(1)
+		common.Logger.Printf("cannot start postgres: %s", errPs.Error())
 	}
 	postgres.PostgreConn = connection
-	defer postgres.PostgreConn.Close(context.Background())
+	defer func(PostgreConn *pgx.Conn, ctx context.Context) {
+		err := PostgreConn.Close(ctx)
+		if err != nil {
+			common.Logger.Println(err.Error())
+		}
+	}(postgres.PostgreConn, context.Background())
 
+	// gracefully server shouting
 	go func() {
 		common.Logger.Println(fmt.Sprintf("Starting server on port %d", common.Port))
 
@@ -70,7 +76,6 @@ func main() {
 	sig := <-c
 	common.Logger.Println("Got signal:", sig)
 
-	// gracefully shutdown the server, waiting max 30 seconds for current operations to complete
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	cancel()
 	_ = server.Shutdown(ctx)
