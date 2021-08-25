@@ -2,9 +2,25 @@ package model
 
 import (
 	"errors"
+	"fmt"
 	"github.com/haxul/planning-app/backend/common"
 	"time"
 )
+
+var stateMap = map[string]State{
+	common.IN_PROGRESS_STATE: &InProgressState{},
+	common.DONE_STATE:        &DoneState{},
+	common.REJECTED_STATE:    &RejectState{},
+	common.BACKLOG_STATE:     &BacklogState{},
+}
+
+func NewStateFromString(s string) (State, error) {
+	state, ok := stateMap[s]
+	if ok {
+		return state, nil
+	}
+	return nil, errors.New(fmt.Sprintf("unknown state type: %s", s))
+}
 
 type State interface {
 	Move(c *Card) (string, error)

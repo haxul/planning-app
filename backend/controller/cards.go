@@ -47,12 +47,19 @@ func (ctrl *CardsCtrl) CreateCard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newCard := ctrl.cardsService.NewCard(cardReq.Title, cardReq.Description, cardReq.Tag)
-	ctrl.cardsService.SaveCard(newCard)
+	newCardErr := ctrl.cardsService.SaveCard(newCard)
+
+	if newCardErr != nil {
+		ctrl.logger.Println(newCardErr.Error())
+		http.Error(w, "newCardErr", http.StatusInternalServerError)
+		return
+	}
+
 	cardResp, cardErr := dto.NewCardResp(newCard)
 
 	if cardErr != nil {
 		ctrl.logger.Println(cardErr.Error())
-		http.Error(w, cardErr.Error(), http.StatusInternalServerError)
+		http.Error(w, "Save card error", http.StatusInternalServerError)
 		return
 	}
 
@@ -67,7 +74,13 @@ func (ctrl *CardsCtrl) CreateCard(w http.ResponseWriter, r *http.Request) {
 
 func (ctrl *CardsCtrl) GetAllCards(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	cards := ctrl.cardsService.GetAllCards()
+	cards, err := ctrl.cardsService.GetAllCards()
+
+	if err != nil {
+		ctrl.logger.Println(err.Error())
+		http.Error(w, "cannot create card response", http.StatusInternalServerError)
+		return
+	}
 
 	list := make([]*dto.CardResp, len(cards))
 
@@ -81,8 +94,8 @@ func (ctrl *CardsCtrl) GetAllCards(w http.ResponseWriter, _ *http.Request) {
 		list[i] = r
 	}
 
-	err := json.NewEncoder(w).Encode(list)
-	if err != nil {
+	errJson := json.NewEncoder(w).Encode(list)
+	if errJson != nil {
 		ctrl.logger.Println(err.Error())
 		http.Error(w, "cannot encode cards as json", http.StatusInternalServerError)
 		return

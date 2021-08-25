@@ -33,12 +33,13 @@ func GetCardsRamPrsInstance() *CardsRamPst {
 	return instance
 }
 
-func (cp *CardsRamPst) AddCard(c *model.Card) {
+func (cp *CardsRamPst) AddCard(c *model.Card) error {
 	storage = append(storage, c)
+	return nil
 }
 
-func (cp *CardsRamPst) GetAllCards() []*model.Card {
-	return storage
+func (cp *CardsRamPst) GetAllCards() ([]*model.Card, error) {
+	return storage, nil
 }
 
 func (cp *CardsRamPst) FindById(cardId *string) (*model.Card, error) {

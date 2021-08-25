@@ -44,11 +44,11 @@ func (cs *CardsSv) NewCard(title string, description string, tag string) *model.
 	return card
 }
 
-func (cs *CardsSv) SaveCard(card *model.Card) {
-	cs.cardsPersistence.AddCard(card)
+func (cs *CardsSv) SaveCard(card *model.Card) error {
+	return cs.cardsPersistence.AddCard(card)
 }
 
-func (cs *CardsSv) GetAllCards() []*model.Card {
+func (cs *CardsSv) GetAllCards() ([]*model.Card, error) {
 	return cs.cardsPersistence.GetAllCards()
 }
 
