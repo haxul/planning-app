@@ -8,7 +8,7 @@ import (
 
 type CardReq struct {
 	Title       string `json:"title" validate:"required,NotBlank"`
-	Description string `json:"description" validate:"required,NotBlank"`
+	Description string `json:"description"`
 	Tag         string `json:"tag" validate:"required,IsTag"`
 }
 
