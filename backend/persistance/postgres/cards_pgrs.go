@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"github.com/haxul/planning-app/backend/model"
 	"github.com/jackc/pgx/v4"
 	"sync"
@@ -19,6 +20,29 @@ func GetCardsPostgresPrs() *CardsPostgresPst {
 		instance = &CardsPostgresPst{}
 	})
 	return instance
+}
+
+func (cp *CardsPostgresPst) UpdateCard(newCard *model.Card) error {
+	statement := "select exists(select 1 from cards where id =$1)"
+	var exists bool
+	err := PostgreConn.QueryRow(context.Background(), statement, newCard.Id).Scan(&exists)
+	if err != nil {
+		return err
+	}
+
+	if !exists {
+		return errors.New("ID_NOT_FOUND")
+	}
+
+	updStatement := "UPDATE cards SET state=$1,title=$2,description=$3,tag=$4,update_on=$5 WHERE id =$6"
+	_, updErr := PostgreConn.Exec(context.Background(), updStatement,
+		newCard.CurState.String(), newCard.Title, newCard.Description, newCard.Tag, newCard.UpdatedOn, newCard.Id)
+
+	if updErr != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (cp *CardsPostgresPst) AddCard(c *model.Card) error {

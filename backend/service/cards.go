@@ -57,7 +57,17 @@ func (cs *CardsSv) MoveForwardCard(cardId *string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return card.CurState.Move(card)
+
+	newState, stateErr := card.CurState.Move(card)
+	if stateErr != nil {
+		return "", stateErr
+	}
+
+	updErr := cs.cardsPersistence.UpdateCard(card)
+	if updErr != nil {
+		return "", updErr
+	}
+	return newState, nil
 }
 
 func (cs *CardsSv) RejectCard(cardId *string) (string, error) {
@@ -65,7 +75,16 @@ func (cs *CardsSv) RejectCard(cardId *string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return card.CurState.Reject(card)
+	newState, stateErr := card.CurState.Reject(card)
+	if stateErr != nil {
+		return "", stateErr
+	}
+
+	updErr := cs.cardsPersistence.UpdateCard(card)
+	if updErr != nil {
+		return "", updErr
+	}
+	return newState, nil
 }
 
 func (cs *CardsSv) FindCardById(id *string) (*model.Card, error) {

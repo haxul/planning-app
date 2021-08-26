@@ -33,6 +33,10 @@ func GetCardsRamPrsInstance() *CardsRamPst {
 	return instance
 }
 
+func (cp *CardsRamPst) UpdateCard(_ *model.Card) error {
+	panic("not implemented")
+}
+
 func (cp *CardsRamPst) AddCard(c *model.Card) error {
 	storage = append(storage, c)
 	return nil
