@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/haxul/planning-app/backend/common"
+	"github.com/haxul/planning-app/backend/custom_errs"
 	"time"
 )
 
@@ -71,7 +72,7 @@ func (s *DoneState) String() string {
 }
 
 func (s *DoneState) Move(_ *Card) (string, error) {
-	return "", errors.New("cannot move card from status done")
+	return "", &custom_errs.ConflictStateErr{}
 }
 
 func (s *DoneState) Reject(c *Card) (string, error) {
@@ -93,5 +94,5 @@ func (s *RejectState) Move(c *Card) (string, error) {
 }
 
 func (s *RejectState) Reject(_ *Card) (string, error) {
-	return common.REJECTED_STATE, nil
+	return "", &custom_errs.ConflictStateErr{}
 }

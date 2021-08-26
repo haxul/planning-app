@@ -49,6 +49,7 @@ func main() {
 		"user=haxul password=test host=localhost port=5432 dbname=planning_db")
 	if errPs != nil {
 		common.Logger.Printf("cannot start postgres: %s", errPs.Error())
+		os.Exit(1)
 	}
 	postgres.PostgreConn = connection
 	defer func(PostgreConn *pgx.Conn, ctx context.Context) {

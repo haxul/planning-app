@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/haxul/planning-app/backend/common"
 	"github.com/haxul/planning-app/backend/controller/dto"
+	"github.com/haxul/planning-app/backend/custom_errs"
 	"github.com/haxul/planning-app/backend/service"
 	"log"
 	"net/http"
@@ -59,7 +60,7 @@ func (ctrl *CardsCtrl) CreateCard(w http.ResponseWriter, r *http.Request) {
 
 	if cardErr != nil {
 		ctrl.logger.Println(cardErr.Error())
-		http.Error(w, "Save card error", http.StatusInternalServerError)
+		http.Error(w, "Save card custom_errs", http.StatusInternalServerError)
 		return
 	}
 
@@ -108,14 +109,20 @@ func (ctrl *CardsCtrl) MoveCard(w http.ResponseWriter, r *http.Request) {
 	cardId := vars["id"]
 	newState, err := ctrl.cardsService.MoveForwardCard(&cardId)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusConflict)
+		cErr, ok := err.(*custom_errs.ConflictStateErr)
+		if ok {
+			http.Error(w, err.Error(), cErr.GetHttpStatus())
+			return
+		}
+		ctrl.logger.Println(err.Error())
+		http.Error(w, "some gets wrong", http.StatusInternalServerError)
 		return
 	}
 	resp := &dto.ChangeStateCardResp{NewState: newState}
 	errJson := json.NewEncoder(w).Encode(resp)
 	if errJson != nil {
 		ctrl.logger.Println(err.Error())
-		http.Error(w, "changeCardResp encoding error", http.StatusInternalServerError)
+		http.Error(w, "changeCardResp encoding custom_errs", http.StatusInternalServerError)
 		return
 	}
 
@@ -134,7 +141,7 @@ func (ctrl *CardsCtrl) RejectCard(w http.ResponseWriter, r *http.Request) {
 	errJson := json.NewEncoder(w).Encode(resp)
 	if errJson != nil {
 		ctrl.logger.Println(err.Error())
-		http.Error(w, "changeCardResp encoding error", http.StatusInternalServerError)
+		http.Error(w, "changeCardResp encoding custom_errs", http.StatusInternalServerError)
 		return
 	}
 }
