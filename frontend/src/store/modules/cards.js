@@ -65,8 +65,17 @@ export default {
         getCards(state) {
             return state.cards
         },
-        getBacklogList(state) {
-            return state.cards.filter(e => e.cur_state === Constants.CARD_STATE.BACKLOG)
+        getCourseList(state) {
+            return state.cards.filter(e => e.cur_state === Constants.CARD_STATE.COURSE)
+        },
+        getPetList(state) {
+            return state.cards.filter(e => e.cur_state === Constants.CARD_STATE.PET)
+        },
+        getBookList(state) {
+            return state.cards.filter(e => e.cur_state === Constants.CARD_STATE.BOOK)
+        },
+        getVideoList(state) {
+            return state.cards.filter(e => e.cur_state === Constants.CARD_STATE.VIDEO)
         },
         getInProgressList(state) {
             return state.cards.filter(e => e.cur_state === Constants.CARD_STATE.IN_PROGRESS)

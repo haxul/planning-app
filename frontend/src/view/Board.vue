@@ -2,7 +2,16 @@
   <div class="container">
     <div class="row align-items-center justify-content-center">
       <div class="col">
-        <h5>Backlog</h5>
+        <h5>Course</h5>
+      </div>
+      <div class="col">
+        <h5>Book</h5>
+      </div>
+      <div class="col">
+        <h5>Pet</h5>
+      </div>
+      <div class="col">
+        <h5>Video</h5>
       </div>
       <div class="col">
         <h5>In progress</h5>
@@ -16,8 +25,16 @@
     </div>
     <div class="row align-items-start">
       <div class="col">
-        <Card v-for="(elem, idx) in getBacklogList" :key="elem.id + idx" :card="elem"/>
-
+        <Card v-for="(elem, idx) in this.getCourseList" :key="elem.id + idx" :card="elem"/>
+      </div>
+      <div class="col">
+        <Card v-for="(elem, idx) in this.getBookList" :key="elem.id + idx" :card="elem"/>
+      </div>
+      <div class="col">
+        <Card v-for="(elem, idx) in this.getPetList" :key="elem.id + idx" :card="elem"/>
+      </div>
+      <div class="col">
+        <Card v-for="(elem, idx) in this.getVideoList" :key="elem.id + idx" :card="elem"/>
       </div>
       <div class="col">
         <Card v-for="(elem, idx) in getInProgressList" :key="elem.id + idx" :card="elem"/>
@@ -41,7 +58,9 @@ export default {
   name: "Board",
   components: {Card},
   computed: {
-    ...mapGetters(["getDoneList", "getInProgressList", "getBacklogList", "getRejectedList"])
+    ...mapGetters(["getDoneList", "getInProgressList", "getRejectedList", "getPetList", "getBookList"
+      , "getCourseList", "getVideoList"
+    ])
   }
   ,
   mounted() {
