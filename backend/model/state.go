@@ -12,7 +12,10 @@ var stateMap = map[string]State{
 	common.IN_PROGRESS_STATE: &InProgressState{},
 	common.DONE_STATE:        &DoneState{},
 	common.REJECTED_STATE:    &RejectState{},
-	common.BACKLOG_STATE:     &BacklogState{},
+	common.BOOK_STATE:        &BookState{},
+	common.COURSE_STATE:      &CourseState{},
+	common.PET_STATE:         &PetState{},
+	common.VIDEO_STATE:       &VideoState{},
 }
 
 func NewStateFromString(s string) (State, error) {
@@ -29,22 +32,79 @@ type State interface {
 	String() string
 }
 
-type BacklogState struct{}
-
-func (s *BacklogState) String() string {
-	return common.BACKLOG_STATE
+type VideoState struct {
 }
 
-func (s *BacklogState) Move(card *Card) (string, error) {
-	card.UpdatedOn = time.Now()
-	card.CurState = &InProgressState{}
+func (v *VideoState) Move(c *Card) (string, error) {
+	c.UpdatedOn = time.Now()
+	c.CurState = &InProgressState{}
 	return common.IN_PROGRESS_STATE, nil
 }
 
-func (s *BacklogState) Reject(c *Card) (string, error) {
+func (v *VideoState) Reject(c *Card) (string, error) {
 	c.UpdatedOn = time.Now()
 	c.CurState = &RejectState{}
 	return common.REJECTED_STATE, nil
+}
+
+func (v *VideoState) String() string {
+	return common.VIDEO_STATE
+}
+
+type PetState struct {
+}
+
+func (p *PetState) Move(c *Card) (string, error) {
+	c.UpdatedOn = time.Now()
+	c.CurState = &InProgressState{}
+	return common.IN_PROGRESS_STATE, nil
+}
+
+func (p *PetState) Reject(c *Card) (string, error) {
+	c.UpdatedOn = time.Now()
+	c.CurState = &RejectState{}
+	return common.REJECTED_STATE, nil
+}
+
+func (p *PetState) String() string {
+	return common.COURSE_STATE
+}
+
+type CourseState struct {
+}
+
+func (cs *CourseState) Move(c *Card) (string, error) {
+	c.UpdatedOn = time.Now()
+	c.CurState = &InProgressState{}
+	return common.IN_PROGRESS_STATE, nil
+}
+
+func (cs *CourseState) Reject(c *Card) (string, error) {
+	c.UpdatedOn = time.Now()
+	c.CurState = &RejectState{}
+	return common.REJECTED_STATE, nil
+}
+
+func (cs *CourseState) String() string {
+	return common.COURSE_STATE
+}
+
+type BookState struct{}
+
+func (b *BookState) Move(c *Card) (string, error) {
+	c.UpdatedOn = time.Now()
+	c.CurState = &InProgressState{}
+	return common.IN_PROGRESS_STATE, nil
+}
+
+func (b *BookState) Reject(c *Card) (string, error) {
+	c.UpdatedOn = time.Now()
+	c.CurState = &RejectState{}
+	return common.REJECTED_STATE, nil
+}
+
+func (b *BookState) String() string {
+	return common.BOOK_STATE
 }
 
 type InProgressState struct{}
@@ -89,8 +149,8 @@ func (s *RejectState) String() string {
 
 func (s *RejectState) Move(c *Card) (string, error) {
 	c.UpdatedOn = time.Now()
-	c.CurState = &BacklogState{}
-	return common.BACKLOG_STATE, nil
+	c.CurState = &InProgressState{}
+	return common.IN_PROGRESS_STATE, nil
 }
 
 func (s *RejectState) Reject(_ *Card) (string, error) {

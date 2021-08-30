@@ -2,6 +2,7 @@ package dto
 
 import (
 	"errors"
+	"github.com/haxul/planning-app/backend/common"
 	"github.com/haxul/planning-app/backend/model"
 	"time"
 )
@@ -33,19 +34,31 @@ func NewCardResp(card *model.Card) (*CardResp, error) {
 	state := ""
 
 	if _, ok := card.CurState.(*model.DoneState); ok {
-		state = "DONE"
+		state = common.DONE_STATE
 	}
 
-	if _, ok := card.CurState.(*model.BacklogState); ok {
-		state = "BACKLOG"
+	if _, ok := card.CurState.(*model.PetState); ok {
+		state = common.PET_STATE
+	}
+
+	if _, ok := card.CurState.(*model.VideoState); ok {
+		state = common.VIDEO_STATE
+	}
+
+	if _, ok := card.CurState.(*model.CourseState); ok {
+		state = common.COURSE_STATE
+	}
+
+	if _, ok := card.CurState.(*model.BookState); ok {
+		state = common.BOOK_STATE
 	}
 
 	if _, ok := card.CurState.(*model.InProgressState); ok {
-		state = "IN_PROGRESS"
+		state = common.IN_PROGRESS_STATE
 	}
 
 	if _, ok := card.CurState.(*model.RejectState); ok {
-		state = "REJECTED"
+		state = common.REJECTED_STATE
 	}
 
 	if state == "" {

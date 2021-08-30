@@ -47,7 +47,12 @@ func (ctrl *CardsCtrl) CreateCard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newCard := ctrl.cardsService.NewCard(cardReq.Title, cardReq.Description, cardReq.Tag)
+	newCard, cErr := ctrl.cardsService.NewCard(cardReq.Title, cardReq.Description, cardReq.Tag)
+	if cErr != nil {
+		ctrl.logger.Println(cErr.Error())
+		http.Error(w, "cannot create new card", http.StatusInternalServerError)
+		return
+	}
 	newCardErr := ctrl.cardsService.SaveCard(newCard)
 
 	if newCardErr != nil {

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	"github.com/haxul/planning-app/backend/common"
@@ -8,6 +9,7 @@ import (
 	"github.com/haxul/planning-app/backend/persistance"
 	"github.com/haxul/planning-app/backend/persistance/postgres"
 	"log"
+	"strings"
 	"sync"
 	"time"
 )
@@ -30,18 +32,23 @@ func GetCardsSvInstance() *CardsSv {
 	return instance
 }
 
-func (cs *CardsSv) NewCard(title string, description string, tag string) *model.Card {
+func (cs *CardsSv) NewCard(title string, description string, tag string) (*model.Card, error) {
+	upperTag := strings.ToUpper(tag)
+	state, errState := model.NewStateFromString(upperTag)
+	if errState != nil {
+		return nil, errors.New("unknown state to create card")
+	}
 	card := &model.Card{
 		Id:          uuid.NewString(),
 		Title:       title,
 		Description: description,
 		Tag:         tag,
 		UpdatedOn:   time.Now(),
-		CurState:    &model.BacklogState{},
+		CurState:    state,
 	}
 	msg := fmt.Sprintf("new card with id %s is created", card.Id)
 	cs.logger.Println(msg)
-	return card
+	return card, nil
 }
 
 func (cs *CardsSv) SaveCard(card *model.Card) error {
